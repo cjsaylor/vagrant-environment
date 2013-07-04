@@ -34,6 +34,3 @@
 [submodule "cookbooks/git"]
 	path = cookbooks/git
 	url = https://github.com/opscode-cookbooks/git.git
-[submodule "cookbooks/sphinx"]
-	path = cookbooks/sphinx
-	url = https://github.com/jesseadams/sphinx-cookbook.git
