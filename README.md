@@ -1,4 +1,4 @@
-# Onboarding
+# LAMP + Java, NodeJS, and MongoDB
 
 The purpose of this project is to have a development environment up and running in the quickest amount of time.
 
