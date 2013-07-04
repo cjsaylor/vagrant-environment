@@ -1,0 +1,11 @@
+<VirtualHost *:80>
+  ServerName %0
+  ServerAlias *.%0
+
+  VirtualDocumentRoot <%= @params[:docroot] %>/%0
+
+  <Directory "<%= @params[:docroot] %>/%0">
+    Options FollowSymLinks -Indexes
+    AllowOverride All
+  </Directory>
+</VirtualHost>

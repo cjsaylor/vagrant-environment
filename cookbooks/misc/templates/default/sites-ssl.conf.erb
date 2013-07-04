@@ -1,0 +1,18 @@
+<VirtualHost *:443>
+  VirtualDocumentRoot <%= @params[:docroot] %>/%0
+  ServerName %0
+  ServerAlias *.%0
+
+  SSLEngine On
+  SSLCertificateFile <%= node['apache']['dir'] %>/ssl/server.crt
+  SSLCertificateKeyFile <%= node['apache']['dir'] %>/ssl/server.key
+  SSLCipherSuite ALL:-ADH:HIGH:MEDIUM:-LOW:-SSLv2:-EXP
+
+  SetEnvIf X-Forwarded-Proto https HTTPS=1
+  SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+
+  <Directory "<%= @params[:docroot] %>/%0">
+    Options FollowSymLinks -Indexes
+    AllowOverride All
+  </Directory>
+</VirtualHost>
