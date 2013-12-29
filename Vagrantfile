@@ -3,27 +3,41 @@
 
 require 'yaml'
 
+class ::Hash
+  def deep_merge(second)
+    merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+    self.merge(second, &merger)
+  end
+end
+
 Vagrant.configure("2") do |config|
 
+  extConfigDefault = {
+    'vagrant' => {
+      'machine' => {
+        'hostname' => 'c.dev',
+        'aliases' => [],
+        'memory' => '2048',
+        'nfs' => true
+      }
+    }
+  }
   extConfig = YAML.load_file('config.yml')
+  extConfig = extConfigDefault.deep_merge extConfig
 
   config.vm.box = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
   config.vm.network :private_network, ip: "33.33.0.70"
-  config.vm.hostname = "c.dev"
-  config.hostsupdater.aliases = [
-    "boxmeup.c.dev",
-    "kibana.c.dev", # Optional log viewer
-    "memcache.c.dev" # Optional memcache viewer
-  ]
+  config.vm.hostname = extConfig['vagrant']['machine']['hostname']
+  config.hostsupdater.aliases = extConfig['vagrant']['machine']['aliases']
 
   config.vm.provider :virtualbox do |vb|
     vb.name = "Dev Environment 1"
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--memory", extConfig['vagrant']['machine']['memory']]
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/graph", "1"]
   end
 
-  config.vm.synced_folder extConfig['vagrant']['share_path'], "/home/vagrant/shared/", id: "vagrant-root", :nfs => !!!ENV['NFS']
+  config.vm.synced_folder extConfig['vagrant']['share_path'], "/home/vagrant/shared/", id: "vagrant-root", :nfs => extConfig['vagrant']['machine']['nfs']
 
   config.vm.provision :chef_solo do |chef|
     chef.log_level = "info"
