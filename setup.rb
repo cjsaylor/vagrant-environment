@@ -18,5 +18,5 @@ system 'git submodule update --init --recursive'
 puts "\tSetting up vagrant..."
 
 system 'vagrant plugin install vagrant-hostsupdater'
-system 'NFS=0 vagrant up'
-system 'vagrant reload'
+
+puts "\tSetup complete. Run 'vagrant up' to start the vagrant machine."
