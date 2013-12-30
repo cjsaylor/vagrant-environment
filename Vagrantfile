@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
   extConfig = YAML.load_file('config.yml')
   extConfig = extConfigDefault.deep_merge extConfig
 
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box = "raring64"
+  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/raring/current/raring-server-cloudimg-i386-vagrant-disk1.box"
   config.vm.network :private_network, ip: "33.33.0.70"
   config.vm.hostname = extConfig['vagrant']['machine']['hostname']
   config.hostsupdater.aliases = extConfig['vagrant']['machine']['aliases']
@@ -39,9 +39,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder extConfig['vagrant']['share_path'], "/home/vagrant/shared/", id: "vagrant-root", :nfs => extConfig['vagrant']['machine']['nfs']
 
+  config.vm.provision :shell, :inline => "gem install chef --version 10.30.2 --no-rdoc --no-ri --conservative"
   config.vm.provision :chef_solo do |chef|
     chef.log_level = "info"
-    chef.cookbooks_path = "cookbooks"
+    chef.cookbooks_path = "./cookbooks"
     chef.add_recipe "apt"
     chef.add_recipe "build-essential"
     chef.add_recipe "git"

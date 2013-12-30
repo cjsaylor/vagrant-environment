@@ -17,31 +17,40 @@ The script will do the following:
 1. Configure your shared directory.
 1. Update any attached submodules (cookbooks)
 1. Install dependent vagrant plugins.
-1. Initialize vagrant VM with a non-NFS shared directory for initial installation.
-1. Reboot with NFS engaged.
 
-## Working with the Environment
+Then, run `vagrant up`.
 
-The vagrant development environment can be run and shutdown with the `vagrant` command from the onboarding directory.
+## Using the environment
 
-#### Bring the box up
+#### Accessing apache locations
 
-`vagrant up`
+In your mapped directory, the project directory must conform to your hostname. On vagrant, if you wanted to access `http://boxmeup.c.dev` from the browser,
+then in the vagrant shared directory, the directory structure needs to be: `/home/vagrant/shared/boxmeup.c.dev/`. This is provided that your configured hostname is `c.dev` in the `config.yml`.
 
-#### Bring the box up without NFS shared directories
 
-`NFS=0 vagrant up`
+## Known Issues
 
-#### Shutdown the box
+* Due to an upstream bug in the opswords/php cookbook, pear installs fail when provisioning. https://github.com/opscode-cookbooks/php/pull/54. To fix, apply the following diff:
 
-`vagrant halt`
+```diff
+diff --git a/providers/pear.rb b/providers/pear.rb
+index ca473b5..db90e17 100644
+--- a/providers/pear.rb
++++ b/providers/pear.rb
+@@ -258,13 +258,13 @@ def pecl?
+   @pecl ||= begin
+               # search as a pear first since most 3rd party channels will report pears as pecls!
+               search_cmd = "#{node['php']['pear']} -d"
+-              search_cmd << " preferred_state=#{can_haz(@new_resource, preferred_state)}"
++              search_cmd << " preferred_state=#{can_haz(@new_resource, "preferred_state")}"
+               search_cmd << " search#{expand_channel(can_haz(@new_resource, "channel"))} #{@new_resource.package_name}"
 
-#### Reload the box
-
-`vagrant reload`
-
-See `vagrant -h` for complete information.
-
-## Possible Issues
-
-* If there's a problem mounting the NFS shared directory, this can sometimes happen the first time you try the NFS mount. Retry the vagrant up. If it is still a problem, you can execute the vagrant commands without the NFS mount: `NFS=0 vagrant up`.
+               if grep_for_version(shell_out(search_cmd).stdout, @new_resource.package_name).nil?
+                 # fall back and search as a pecl
+                 search_cmd = "#{node['php']['pecl']} -d"
+-                search_cmd << " preferred_state=#{can_haz(@new_resource, preferred_state)}"
++                search_cmd << " preferred_state=#{can_haz(@new_resource, "preferred_state")}"
+                 search_cmd << " search#{expand_channel(can_haz(@new_resource, "channel"))} #{@new_resource.package_name}"
+               else
+                 false
+```
