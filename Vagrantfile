@@ -72,7 +72,11 @@ Vagrant.configure("2") do |config|
     chef.json = {
       "apache" => {
         "user" => "vagrant",
-        "group" => "vagrant"
+        "group" => "vagrant",
+        "version" => "2.4"
+      },
+      "php" => {
+        "ext_conf_dir" => "/etc/php5/mods-available"
       },
       "mysql" => {
         "server_root_password" => "root",

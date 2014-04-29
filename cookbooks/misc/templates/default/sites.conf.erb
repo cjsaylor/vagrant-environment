@@ -2,10 +2,19 @@
   ServerName %0
   ServerAlias *.%0
 
-  VirtualDocumentRoot <%= @params[:docroot] %>/%0
+  UseCanonicalName Off
+  VirtualDocumentRoot <%= @params[:docroot] %>/%1
 
-  <Directory "<%= @params[:docroot] %>/%0">
-    Options FollowSymLinks -Indexes
+  LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+  CustomLog /var/log/apache2/other_vhosts_access.log vcommon
+
+  <Directory "<%= @params[:docroot] %>">
     AllowOverride All
+    Require all granted
   </Directory>
+
+  <Directory "<%= @params[:docroot] %>/%1">
+    Options +FollowSymLinks -Indexes
+  </Directory>
+
 </VirtualHost>
