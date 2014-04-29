@@ -39,6 +39,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder extConfig['vagrant']['share_path'], "/home/vagrant/shared/", id: "vagrant-root", :nfs => extConfig['vagrant']['machine']['nfs']
 
+  config.vm.provision :shell, :inline => "apt-get install ruby1.9.1-dev"
   config.vm.provision :shell, :inline => "gem install chef --version 10.30.2 --no-rdoc --no-ri --conservative"
   config.vm.provision :chef_solo do |chef|
     chef.log_level = "info"
