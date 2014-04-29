@@ -67,6 +67,7 @@ Vagrant.configure("2") do |config|
     chef.add_recipe "apache2::mod_ssl"
     chef.add_recipe "apache2::mod_dir"
     chef.add_recipe "apache2::mod_alias"
+    chef.add_recipe "composer"
     chef.add_recipe "misc::packages"
     chef.add_recipe "misc::vhost"
     chef.add_recipe "misc::environment"
