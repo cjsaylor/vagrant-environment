@@ -41,9 +41,3 @@ end
     action :install
   end
 end
-
-# Install PHPUnit
-php_pear "PHPUnit" do
-  channel "phpunit"
-  action :install
-end
