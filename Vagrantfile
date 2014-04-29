@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
   extConfig = YAML.load_file('config.yml')
   extConfig = extConfigDefault.deep_merge extConfig
 
-  config.vm.box = "raring64"
-  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/raring/current/raring-server-cloudimg-i386-vagrant-disk1.box"
+  config.vm.box = "trusty64"
+  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
   config.vm.network :private_network, ip: "33.33.0.70"
   config.vm.hostname = extConfig['vagrant']['machine']['hostname']
   config.hostsupdater.aliases = extConfig['vagrant']['machine']['aliases']
